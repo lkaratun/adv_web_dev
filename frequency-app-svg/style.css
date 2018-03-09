@@ -1,0 +1,103 @@
+/*body {
+  margin: 0;
+  text-align: center;
+}
+
+header {
+  padding: 40px;
+  background-color: #5a0071;
+  color: white;
+  font-family: sans-serif;
+}
+
+form > input {
+  width: 60%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+form > button {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #d0d0f9;
+  border: none;
+}
+
+form > button:hover {
+  cursor: pointer;
+  background-color: #6a6a8e;
+}
+
+#letters {
+  margin: 20px auto 0;
+  width: 800px;
+  border: 2px solid black;
+}
+
+
+
+
+.letter rect {
+  fill: #ffc800;
+}
+
+.new rect {
+  fill: #00ff00;
+}
+
+.new text {
+  font-size: 2em;
+}*/
+
+
+
+body {
+  margin: 0;
+  text-align: center;
+}
+
+header {
+  padding: 40px;
+  background-color: #5a0071;
+  color: white;
+  font-family: sans-serif;
+}
+
+form > input {
+  width: 60%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+form > button {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #d0d0f9;
+  border: none;
+}
+
+form > button:hover {
+  cursor: pointer;
+  background-color: #6a6a8e;
+}
+
+#letters {
+  margin: 20px auto 0;
+  width: 800px;
+  height: 200px;
+}
+
+.letter rect {
+  fill: #ffc800;
+}
+
+.new rect {
+  fill: #00ff00;
+}
+
+.new text {
+  font-size: 2em;
+  fill:white;
+}
