@@ -1,0 +1,12 @@
+svg {
+  /*margin: 0 auto;*/
+  /*display: block;*/
+}
+
+.flex-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  margin: 20px;
+  flex-wrap: wrap;
+}

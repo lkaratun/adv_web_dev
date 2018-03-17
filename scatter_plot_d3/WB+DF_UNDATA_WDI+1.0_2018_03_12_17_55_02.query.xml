@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StructureSpecificDataQuery xmlns="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message">
+  <!--NSI Web client v3.11.0.0-->
+  <Header>
+    <ID>IDREF11</ID>
+    <Test>false</Test>
+    <Prepared>2018-03-12T17:55:02.1326744+01:00</Prepared>
+    <Sender id="Unknown" />
+    <Receiver id="Unknown" />
+  </Header>
+  <Query>
+    <ReturnDetails defaultLimit="361914" detail="Full" observationAction="Active" xmlns="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/query">
+      <Structure dimensionAtObservation="TIME_PERIOD" structureID="StructureId">
+        <Structure xmlns="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common">
+          <Ref agencyID="WB" id="WDI" version="1.0" xmlns="" />
+        </Structure>
+      </Structure>
+    </ReturnDetails>
+    <DataWhere xmlns="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/query">
+      <Dataflow>
+        <Ref agencyID="WB" id="DF_UNDATA_WDI" version="1.0" xmlns="" />
+      </Dataflow>
+    </DataWhere>
+  </Query>
+</StructureSpecificDataQuery>

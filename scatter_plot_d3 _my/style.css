@@ -1,0 +1,13 @@
+svg {
+  margin: 0 auto;
+  display: block;
+}
+
+.tick line{
+	stroke:#999;
+	stroke-dasharray: 10 5;
+}
+
+/*text {
+	font-size:5em;
+}*/
