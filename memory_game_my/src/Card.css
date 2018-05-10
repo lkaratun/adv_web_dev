@@ -1,0 +1,9 @@
+.card {
+	height: 10vw;
+	width: 10vw;
+	margin: 5px;
+	border-radius: 20px;
+	background-color: #808080;
+	border: 7px solid #808080;
+	transition: background-color .1s ease-in;
+}
