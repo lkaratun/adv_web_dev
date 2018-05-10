@@ -11,6 +11,8 @@ class Board extends Component {
 			//delete color from allColors to prevent duplicates
 			var index = this.props.allColors.indexOf(color);
 			if (index !== -1) this.props.allColors.splice(index, 1);
+
+			//Add 2 cards of the same color to the cards array
 			cards.push({
 				key: i,
 				color: color,
@@ -25,7 +27,8 @@ class Board extends Component {
 
 		this.state = {
 			cards : this.shuffleArray(cards),
-			activeCards: []
+			activeCards: [],
+			openedCards: new Set()
 		}
 		this.handleClick = this.handleClick.bind(this);
 
@@ -35,15 +38,15 @@ class Board extends Component {
 		return this.props.allColors[colorIndex];
 	}
 	handleClick(card, e) {
+		//When an opened card clicked again, do nothing
+		if (card.opened || this.state.openedCards.has(card.key) || this.state.activeCards[0] === card) return;
+
+		//Flip clicked card
 		let newCards = this.state.cards.map(d => d.key === card.key ? {...d, opened: true} : d);
 		this.setState({cards: newCards, activeCards: [newCards.filter(d => d.key === card.key)[0]]});
 
-		//Second card clicked
+		//Case when card clicked is second
 		if (this.state.activeCards.length > 0){
-			// console.log(window.getComputedStyle(e.target, null).getPropertyValue("background-color"));
-			console.log(this.state.activeCards[0]);
-			// debugger;
-
 			//We didn't find a match
 			if (this.state.activeCards[0].color !== card.color) {
 				let newCards = this.state.cards.map(d => {
@@ -53,36 +56,31 @@ class Board extends Component {
 				});
 				setTimeout(() => this.setState({cards: newCards}), 500);
 			}
+			//Match found
+			else this.setState(prevState => {openedCards : prevState.openedCards.add(card.key)});
+			//In any case, reset active cards list
 			this.setState({activeCards: []});
 		}
-
 	}
-
-
 
 	render () {
 		const cards = this.state.cards.map(d =>
 			{return	<Card color={d.color} key={d.key} opened={d.opened} handleClick={this.handleClick.bind(this, d)}/>}
-		)
+		)//map
 		return (
-
 			<div className="board">
 				{cards}
 			</div>
-			)
-		}
+		)}//render
 
+	//Used for shuffling the card order
 	shuffleArray (arr) {
 	  return arr
 			    .map(a => [Math.random(), a])
 			    .sort((a, b) => a[0] - b[0])
 			    .map(a => a[1]);
 	};
-
-
-
-
-}
+}//Board
 
 Board.defaultProps = {
   // allColors: ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond",
