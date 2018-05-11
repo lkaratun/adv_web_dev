@@ -34,6 +34,9 @@ class Board extends Component {
 				numCards = 64;
 				colors = [...this.props.hardColors];
 				break;
+			default:
+				numCards = 16;
+				colors = [...this.props.easyColors];
 		}
 
 		let cards = [];
@@ -61,6 +64,7 @@ class Board extends Component {
 	resetGame () {
 		let cards = this.shuffleArray(this.state.cards.map(d => ({...d, opened: false})));
 		this.setState({cards});
+		this.props.handleReset();
 	}
 
 	changeDifficulty(difficulty){
@@ -74,6 +78,7 @@ class Board extends Component {
 			clicksBlocked: false,
 			currentDifficulty: difficulty
 		});
+		this.props.handleReset();
 	}
 
 
@@ -105,12 +110,32 @@ class Board extends Component {
 			// else this.setState(prevState => {return {openedCards : prevState.openedCards.add(card.key)}});
 			//In any case, reset active cards list
 			this.setState({activeCard: null});
+			this.props.handleMove();
 		}
 	}
 	render () {
+		let cardSize;
+		switch (this.state.currentDifficulty) {
+			case "easy":
+				cardSize = "large";
+				break;
+			case "medium":
+				cardSize = "medium";
+				break;
+			case "hard":
+				cardSize = "small";
+				break;
+			default:
+				cardSize = "large";
+		}
 		const cards = this.state.cards.map(d =>
-			{return	<Card color={d.color} key={d.key} opened={d.opened} handleClick={this.handleClick.bind(this, d)}/>}
-		)//map
+			{return <Card
+					color={d.color}
+					key={d.key}
+					opened={d.opened}
+					handleClick={this.handleClick.bind(this, d)}
+					cardSize={cardSize}
+				/>})//map
 		return (
 			<div>
 				<NavBar handleNewGameClick={this.resetGame} handleDifficultyClick={this.changeDifficulty}/>

@@ -27,20 +27,19 @@ class NavBar extends Component {
 			The memory game
 		</div>
 
+		<div id="buttons">
+			<div className="dropdown">
+				<a onClick={this.expandDropdown} className="dropbtn">Difficulty <i className="fa fa-angle-down"></i></a>
+				  <div id="myDropdown" className={"dropdown-content" + (this.state.expanded ? " expanded" : "")}>
+				    <a onClick={() => this.props.handleDifficultyClick("easy")}>Easy</a>
+				    <a onClick={() => this.props.handleDifficultyClick("medium")}>Medium</a>
+				    <a onClick={() => this.props.handleDifficultyClick("hard")}>Hard</a>
+				  </div>
 
-		<div className="dropdown">
-			<a onClick={this.expandDropdown} className="dropbtn">Difficulty <i className="fa fa-angle-down"></i></a>
-			  <div id="myDropdown" className={"dropdown-content" + (this.state.expanded ? " expanded" : "")}>
-			    <a onClick={() => this.props.handleDifficultyClick("easy")}>Easy</a>
-			    <a onClick={() => this.props.handleDifficultyClick("medium")}>Medium</a>
-			    <a onClick={() => this.props.handleDifficultyClick("hard")}>Hard</a>
-			  </div>
+			</div>
 
+			<a id="NewGame" onClick={this.props.handleNewGameClick} style={{textAlign: "center"}}>New game</a>
 		</div>
-
-
-
-		<a id="NewGame" onClick={this.props.handleNewGameClick} style={{textAlign: "center"}}>New game</a>
 	</nav>
 
 
