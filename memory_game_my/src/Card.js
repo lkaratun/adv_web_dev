@@ -4,7 +4,7 @@ import './Card.css';
 const Card = ({color, opened, handleClick}) => {
 	let classList = "card";
 	// if (opened) classList+=" opened"
-	let newColor = opened ? color : "#808080";
+	let newColor = opened ? color : "rgba(175, 175, 175, 0.42)";
   	return  	(
   		<div
   	className={classList}

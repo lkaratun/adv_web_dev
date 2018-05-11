@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Card from './Card'
+import NavBar from './NavBar'
 import './Board.css';
 
 class Board extends Component {
@@ -27,49 +28,58 @@ class Board extends Component {
 
 		this.state = {
 			cards : this.shuffleArray(cards),
-			activeCards: [],
-			openedCards: new Set()
+			activeCard: null,
+			// openedCards: new Set(),
+			clicksBlocked: false
 		}
 		this.handleClick = this.handleClick.bind(this);
+		this.resetGame = this.resetGame.bind(this);
 
+	}
+	resetGame () {
+		let cards = this.shuffleArray(this.state.cards.map(d => ({...d, opened: false})));
+		this.setState({cards});
 	}
 	getRandomColor() {
 		let colorIndex = Math.floor(Math.random() * this.props.allColors.length);
 		return this.props.allColors[colorIndex];
 	}
 	handleClick(card, e) {
-		//When an opened card clicked again, do nothing
-		if (card.opened || this.state.openedCards.has(card.key) || this.state.activeCards[0] === card) return;
+		//When clicked too fast or an opened card clicked, do nothing
+		if (this.state.clicksBlocked || card.opened) return;
 
 		//Flip clicked card
 		let newCards = this.state.cards.map(d => d.key === card.key ? {...d, opened: true} : d);
-		this.setState({cards: newCards, activeCards: [newCards.filter(d => d.key === card.key)[0]]});
+		this.setState({cards: newCards, activeCard: card});
 
 		//Case when card clicked is second
-		if (this.state.activeCards.length > 0){
+		if (this.state.activeCard){
 			//We didn't find a match
-			if (this.state.activeCards[0].color !== card.color) {
+			if (this.state.activeCard.color !== card.color) {
 				let newCards = this.state.cards.map(d => {
-					if (d.key === card.key || d.key === this.state.activeCards[0].key)
+					if (d.key === card.key || d.key === this.state.activeCard.key)
 						return {...d, opened: false};
 					else return d;
 				});
-				setTimeout(() => this.setState({cards: newCards}), 500);
+				this.setState({clicksBlocked: true}, () =>
+				setTimeout(() => this.setState({cards: newCards, clicksBlocked: false}), 500));
 			}
 			//Match found
-			else this.setState(prevState => {openedCards : prevState.openedCards.add(card.key)});
+			// else this.setState(prevState => {return {openedCards : prevState.openedCards.add(card.key)}});
 			//In any case, reset active cards list
-			this.setState({activeCards: []});
+			this.setState({activeCard: null});
 		}
 	}
-
 	render () {
 		const cards = this.state.cards.map(d =>
 			{return	<Card color={d.color} key={d.key} opened={d.opened} handleClick={this.handleClick.bind(this, d)}/>}
 		)//map
 		return (
-			<div className="board">
-				{cards}
+			<div>
+				<NavBar handleClick={this.resetGame}/>
+				<div className="board">
+					{cards}
+				</div>
 			</div>
 		)}//render
 
@@ -103,7 +113,8 @@ Board.defaultProps = {
   //             "SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen",
   //             "SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke",
   //             "Yellow","YellowGreen"]
-  allColors: ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#FFFFFF", "#000000"]
+  // allColors: ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#FFFFFF", "#000000"]
+  allColors: ["#1D2B53", "#00E436", "#FFF1E8", "#29ADFF", "#AB5236", "#FF77A8", "#FFEC27", "#FF004D"]
 };
 
 export default Board;

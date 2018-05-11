@@ -1,0 +1,23 @@
+nav, ul {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-around;
+	align-items: center;
+	margin: 0px;
+	padding: 0px;
+	background-color: rgba(52, 108, 156, 1);
+	color: white;
+}
+li {
+	display: block;
+	margin: 10px 20px;
+}
+a{
+	padding: 5px;
+	border: 1px solid white;
+	border-radius: 5px;
+}
+a:hover {
+	color:lightgray;
+	cursor: pointer;
+}
