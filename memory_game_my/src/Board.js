@@ -6,12 +6,42 @@ import './Board.css';
 class Board extends Component {
 	constructor(props){
 		super(props);
+		this.state = {
+			cards : this.init("easy"),
+			activeCard: null,
+			clicksBlocked: false,
+			currentDifficulty: "easy"
+		};
+
+		this.handleClick = this.handleClick.bind(this);
+		this.resetGame = this.resetGame.bind(this);
+		this.changeDifficulty = this.changeDifficulty.bind(this);
+	}
+
+	init (difficulty){
+		//back up list of colors
+		let numCards, colors;
+		switch (difficulty) {
+			case "easy":
+				numCards = 16;
+				colors = [...this.props.easyColors];
+				break;
+			case "medium":
+				numCards = 32;
+				colors = [...this.props.mediumColors];
+				break;
+			case "hard":
+				numCards = 64;
+				colors = [...this.props.hardColors];
+				break;
+		}
+
 		let cards = [];
-		for (let i = 0; i < 16; i += 2){
-			let color = this.getRandomColor();
-			//delete color from allColors to prevent duplicates
-			var index = this.props.allColors.indexOf(color);
-			if (index !== -1) this.props.allColors.splice(index, 1);
+		for (let i = 0; i < numCards; i += 2){
+			let color = this.getRandomColor(colors);
+			//delete color from colors to prevent duplicates
+			var index = colors.indexOf(color);
+			if (index !== -1) colors.splice(index, 1);
 
 			//Add 2 cards of the same color to the cards array
 			cards.push({
@@ -25,24 +55,31 @@ class Board extends Component {
 				opened: false
 			});
 		}
-
-		this.state = {
-			cards : this.shuffleArray(cards),
-			activeCard: null,
-			// openedCards: new Set(),
-			clicksBlocked: false
-		}
-		this.handleClick = this.handleClick.bind(this);
-		this.resetGame = this.resetGame.bind(this);
-
+		return this.shuffleArray(cards);
 	}
+
 	resetGame () {
 		let cards = this.shuffleArray(this.state.cards.map(d => ({...d, opened: false})));
 		this.setState({cards});
 	}
-	getRandomColor() {
-		let colorIndex = Math.floor(Math.random() * this.props.allColors.length);
-		return this.props.allColors[colorIndex];
+
+	changeDifficulty(difficulty){
+		if (difficulty === this.state.currentDifficulty) {
+			alert('Please use the "New Game" button to start a new game with the same difficulty');
+			return;
+		}
+		this.setState ({
+			cards : this.init(difficulty),
+			activeCard: null,
+			clicksBlocked: false,
+			currentDifficulty: difficulty
+		});
+	}
+
+
+	getRandomColor(colors) {
+		let colorIndex = Math.floor(Math.random() * colors.length);
+		return colors[colorIndex];
 	}
 	handleClick(card, e) {
 		//When clicked too fast or an opened card clicked, do nothing
@@ -76,7 +113,7 @@ class Board extends Component {
 		)//map
 		return (
 			<div>
-				<NavBar handleClick={this.resetGame}/>
+				<NavBar handleNewGameClick={this.resetGame} handleDifficultyClick={this.changeDifficulty}/>
 				<div className="board">
 					{cards}
 				</div>
@@ -93,28 +130,28 @@ class Board extends Component {
 }//Board
 
 Board.defaultProps = {
-  // allColors: ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond",
-  //             "Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate",
-  //             "Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod",
-  //             "DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange",
-  //             "DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey",
-  //             "DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue",
-  //             "FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod",
-  //             "Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki",
-  //             "Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan",
-  //             "LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon",
-  //             "LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow",
-  //             "Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid",
-  //             "MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise",
-  //             "MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy",
-  //             "OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen",
-  //             "PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue",
-  //             "Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen",
-  //             "SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen",
-  //             "SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke",
-  //             "Yellow","YellowGreen"]
-  // allColors: ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#FFFFFF", "#000000"]
-  allColors: ["#1D2B53", "#00E436", "#FFF1E8", "#29ADFF", "#AB5236", "#FF77A8", "#FFEC27", "#FF004D"]
+  hardColors: ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond",
+              "Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate",
+              "Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod",
+              "DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange",
+              "DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey",
+              "DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue",
+              "FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod",
+              "Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki",
+              "Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan",
+              "LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon",
+              "LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow",
+              "Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid",
+              "MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise",
+              "MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy",
+              "OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen",
+              "PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue",
+              "Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen",
+              "SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen",
+              "SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke",
+              "Yellow","YellowGreen"],
+  mediumColors: ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#FFFFFF", "#000000"],
+  easyColors: ["#1D2B53", "#00E436", "#FFF1E8", "#29ADFF", "#AB5236", "#FF77A8", "#FFEC27", "#FF004D"]
 };
 
 export default Board;
