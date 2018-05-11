@@ -3,6 +3,10 @@ import Card from './Card'
 import NavBar from './NavBar'
 import './Board.css';
 
+const numCardsEasy = 16;
+const numCardsMedium = 32;
+const numCardsHard = 64;
+
 class Board extends Component {
 	constructor(props){
 		super(props);
@@ -10,12 +14,14 @@ class Board extends Component {
 			cards : this.init("easy"),
 			activeCard: null,
 			clicksBlocked: false,
-			currentDifficulty: "easy"
+			currentDifficulty: "easy",
+			openedCards: 0
 		};
 
 		this.handleClick = this.handleClick.bind(this);
 		this.resetGame = this.resetGame.bind(this);
 		this.changeDifficulty = this.changeDifficulty.bind(this);
+		this.checkWin = this.checkWin.bind(this);
 	}
 
 	init (difficulty){
@@ -23,19 +29,19 @@ class Board extends Component {
 		let numCards, colors;
 		switch (difficulty) {
 			case "easy":
-				numCards = 16;
+				numCards = numCardsEasy;
 				colors = [...this.props.easyColors];
 				break;
 			case "medium":
-				numCards = 32;
+				numCards = numCardsMedium;
 				colors = [...this.props.mediumColors];
 				break;
 			case "hard":
-				numCards = 64;
+				numCards = numCardsHard;
 				colors = [...this.props.hardColors];
 				break;
 			default:
-				numCards = 16;
+				numCards = numCardsEasy;
 				colors = [...this.props.easyColors];
 		}
 
@@ -63,7 +69,7 @@ class Board extends Component {
 
 	resetGame () {
 		let cards = this.shuffleArray(this.state.cards.map(d => ({...d, opened: false})));
-		this.setState({cards});
+		this.setState({cards, openedCards:0});
 		this.props.handleReset();
 	}
 
@@ -76,11 +82,16 @@ class Board extends Component {
 			cards : this.init(difficulty),
 			activeCard: null,
 			clicksBlocked: false,
-			currentDifficulty: difficulty
+			currentDifficulty: difficulty,
+			openedCards : 0
 		});
 		this.props.handleReset();
 	}
-
+	checkWin() {
+		return ((this.state.currentDifficulty === "easy" && this.state.openedCards === numCardsEasy)
+			|| (this.state.currentDifficulty === "medium" && this.state.openedCards === numCardsMedium)
+			|| (this.state.currentDifficulty === "hard" && this.state.openedCards === numCardsHard));
+	}
 
 	getRandomColor(colors) {
 		let colorIndex = Math.floor(Math.random() * colors.length);
@@ -107,10 +118,14 @@ class Board extends Component {
 				setTimeout(() => this.setState({cards: newCards, clicksBlocked: false}), 500));
 			}
 			//Match found
-			// else this.setState(prevState => {return {openedCards : prevState.openedCards.add(card.key)}});
+			else {
+				this.setState(prevState => ({openedCards: prevState.openedCards+2}),
+					() => {if (this.checkWin()) alert("Nicely done!");});
+			}
 			//In any case, reset active cards list
 			this.setState({activeCard: null});
 			this.props.handleMove();
+
 		}
 	}
 	render () {
